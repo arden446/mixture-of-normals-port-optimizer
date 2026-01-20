@@ -98,14 +98,26 @@ def optimize():
         optimal_weights = result['optimal_weights']
         optimal_sharpe = result['optimal_sharpe']
         optimal_cvar = result['optimal_cvar']
-        
+
+        # Calculate percentiles (5th through 95th in steps of 5)
+        percentile_levels = list(range(5, 100, 5))  # 5, 10, 15, ..., 95
+        percentiles = {p: float(np.percentile(port_returns, p)) for p in percentile_levels}
+
+        # Calculate CVaR at multiple levels (5% through 50% in steps of 5)
+        cvar_levels = list(range(5, 55, 5))  # 5, 10, 15, ..., 50
+        cvars = {}
+        for level in cvar_levels:
+            cvars[level] = float(calculate_cvar(port_returns, alpha=level/100))
+
         return jsonify({
             'optimal_weights': optimal_weights.tolist() if optimal_weights is not None else None,
             'sharpe': float(optimal_sharpe) if optimal_sharpe is not None and np.isfinite(optimal_sharpe) else None,
             'cvar': float(optimal_cvar) if optimal_cvar is not None and np.isfinite(optimal_cvar) else None,
             'mean': float(port_returns.mean()),
             'std': float(port_returns.std()),
-            'portfolio_returns': port_returns.tolist()
+            'portfolio_returns': port_returns.tolist(),
+            'percentiles': percentiles,
+            'cvars': cvars
         })
 
     except Exception as e:

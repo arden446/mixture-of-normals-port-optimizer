@@ -715,6 +715,33 @@ function displayResults(result, elapsedSeconds) {
         `;
     }
 
+    // Build percentiles table (5th through 95th)
+    const percentileLevels = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95];
+    let percentilesHtml = '<table class="stats-table"><thead><tr>';
+    for (const p of percentileLevels) {
+        percentilesHtml += `<th>${p}th</th>`;
+    }
+    percentilesHtml += '</tr></thead><tbody><tr>';
+    for (const p of percentileLevels) {
+        const val = result.percentiles[p];
+        const colorClass = val < 0 ? 'negative' : 'positive';
+        percentilesHtml += `<td class="${colorClass}">${(val * 100).toFixed(1)}%</td>`;
+    }
+    percentilesHtml += '</tr></tbody></table>';
+
+    // Build CVaR table (5% through 50%)
+    const cvarLevels = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
+    let cvarsHtml = '<table class="stats-table"><thead><tr>';
+    for (const c of cvarLevels) {
+        cvarsHtml += `<th>CVaR ${c}%</th>`;
+    }
+    cvarsHtml += '</tr></thead><tbody><tr>';
+    for (const c of cvarLevels) {
+        const val = result.cvars[c];
+        cvarsHtml += `<td class="negative">${(val * 100).toFixed(2)}%</td>`;
+    }
+    cvarsHtml += '</tr></tbody></table>';
+
     const timeInfo = elapsedSeconds ? `<span class="elapsed-time">Completed in ${elapsedSeconds}s</span>` : '';
 
     content.innerHTML = `
@@ -743,6 +770,18 @@ function displayResults(result, elapsedSeconds) {
                     <span class="metric-value">${(result.std * 100).toFixed(2)}%</span>
                 </div>
             </div>
+        </div>
+
+        <div class="result-card stats-card" style="margin-top: 20px;">
+            <h3>Return Percentiles</h3>
+            <p class="stats-description">Portfolio return at each percentile of the distribution</p>
+            ${percentilesHtml}
+        </div>
+
+        <div class="result-card stats-card" style="margin-top: 20px;">
+            <h3>Conditional Value at Risk (CVaR)</h3>
+            <p class="stats-description">Average return in the worst X% of scenarios</p>
+            ${cvarsHtml}
         </div>
 
         <div class="result-card" style="margin-top: 20px;">

@@ -372,3 +372,48 @@ section {
     font-size: 14px;
     min-width: 150px;
 }
+
+/* Stats Tables (Percentiles & CVaR) */
+.stats-card {
+    overflow-x: auto;
+}
+
+.stats-description {
+    color: #7f8c8d;
+    font-size: 13px;
+    margin: 0 0 12px 0;
+}
+
+.stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.stats-table th {
+    background: #f0f0f0;
+    color: #555;
+    font-weight: 600;
+    padding: 8px 6px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.stats-table td {
+    padding: 8px 6px;
+    text-align: center;
+    border: 1px solid #ddd;
+    font-weight: 500;
+    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+}
+
+.stats-table td.negative {
+    color: #c0392b;
+    background: #fef5f5;
+}
+
+.stats-table td.positive {
+    color: #27ae60;
+    background: #f5fef7;
+}
